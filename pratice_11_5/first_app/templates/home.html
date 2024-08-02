@@ -1,0 +1,25 @@
+{% extends 'base.html' %} {% block content %}
+<h1>this is my app's home page</h1>
+
+<div class="container">
+  <div class="row justify-content-center card-container">
+    {% for i in meals %}
+    <div class="col-md-4 d-flex align-items-stretch">
+      <div class="card" style="width: 18rem">
+        <img src="{{ i.strMealThumb }}" class="card-img-top" alt="..." />
+        <div class="card-body">
+          <h5 class="card-title">{{ i.strMeal }}</h5>
+          <h5 class="card-title">Meal ID: {{ i.idMeal }}</h5>
+          <p class="card-text">
+            Some quick example text to build on the card title and make up the
+            bulk of the card's content.
+          </p>
+          <a href="#" class="btn btn-primary">Go somewhere</a>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+
+{% endblock content %}

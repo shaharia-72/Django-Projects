@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <h1>This is home page</h1>
+    <h2>Author: {{author}}</h2>
+    <h2>Age: {{age}}</h2>
+    <h2>{{list}}</h2>
+
+    <!-- Conditional statements -->
+    {% if age <= 14 %}
+    <h4>You are not eligible to get a driving license</h4>
+    {% elif age >= 15 %} {% if age <= 25 %}
+    <h4>You are adult and eligible to get a driving license</h4>
+    {% else %}
+    <h4>You're a child</h4>
+    {% endif %} {% else %}
+    <h4>You're a child</h4>
+    {% endif %}
+
+    <!-- FOR loop -->
+    {% for i in courses %}
+    <h3>{{i.id}} ---- {{i.name}} ---- {{i.fee}}</h3>
+    {% endfor %}
+
+    <!-- filtering  join -->
+    {{list}}
+    <h1>{{ list|join:"-"}}</h1>
+    {% comment %}
+    <h1>{{ list|join:"-" }}</h1>
+    {% endcomment %}
+
+    <!-- date time -->
+    <h1>{{birthday | date:" D d M Y"}}</h1>
+  </body>
+</html>

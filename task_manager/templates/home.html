@@ -1,0 +1,57 @@
+{% extends 'base.html' %} {% block content %}
+<h1
+  class="my-2"
+  style="
+    width: 50%;
+    margin: auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+  ">
+  This is home page
+</h1>
+
+<div class="container">
+  <div class="row mx-2">
+    {% for i in data %}
+    <div class="col-md-4 mb-4">
+      <div class="card h-100 d-flex flex-column">
+        <div class="card-body d-flex flex-column">
+          <h5 class="card-title">{{ i.task_title }}</h5>
+          <p class="card-text flex-grow-1">
+            {{i.task_description | truncatechars:100}}
+          </p>
+          <div>
+            {% for i in data1 %}
+            <a class="btn btn-secondary">{{i.category_name}}</a> {% endfor %}
+          </div>
+          <div>Time: {{i.task_assign_date}}</div>
+          <div class="mt-auto d-flex justify-content-center">
+            {% if not i.is_completed %}
+
+            <a
+              href="{% url 'edit_task' i.id %}"
+              class="btn btn-warning w-25 mx-2 font-weight-bold"
+              >Edit</a
+            >
+            <a
+              href="{% url 'delete_task' i.id %}"
+              class="btn btn-danger w-25 mx-2 font-weight-bold"
+              >Delete</a
+            >
+            {% else %}
+            <a
+              href="{% url 'delete_task' i.id %}"
+              class="btn btn-success w-50 mx-2 font-weight-bold"
+              >Task Complate</a
+            >
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+{% endblock content %}

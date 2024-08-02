@@ -1,0 +1,23 @@
+{% extends 'base.html' %} {% block content %} {% load crispy_forms_tags %}
+
+<h1
+  class="my-2"
+  style="
+    width: 50%;
+    margin: auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+  ">
+  task Model
+</h1>
+
+<form method="post" style="width: 50%; height = 500px; margin: auto;">
+  {% csrf_token %} {% csrf_token %} {{model_form|crispy}} {% if error_message %}
+  <div class="alert alert-danger" role="alert">{{ error_message }}</div>
+  {% endif %}
+
+  <button class="btn btn-warning">Updated</button>
+</form>
+{% endblock content %}
