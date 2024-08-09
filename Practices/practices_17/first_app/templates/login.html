@@ -1,0 +1,15 @@
+{% extends 'base.html' %} {% load crispy_forms_tags %}{% block contant %}
+<!-- Heading -->
+<h1>Login page</h1>
+
+<form
+  method="post"
+  style="width: 50%; height = 500px; margin: auto;"
+  novalidate>
+  {% csrf_token %} {% for i in form %} {{i.label_tag}} {{i}}
+  {{i.errors|striptags }} {% endfor %}
+  <br />
+  <button class="btn btn-danger" type="submit">Logout</button>
+</form>
+
+{% endblock contant %}

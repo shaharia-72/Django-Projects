@@ -1,0 +1,27 @@
+{% extends 'home.html' %} {% block contant %} {% load crispy_forms_tags %}
+<!-- Toasts -->
+
+{% if messages %} {% for m in messages %}
+
+<small>{{m}}</small>
+
+{% endfor %} {% endif %}
+
+<!-- Heading -->
+<h1>Sing Up</h1>
+
+<!--Form-->
+<form
+  method="post"
+  action=""
+  style="width: 50%; height = 500px; margin: auto;"
+  novalidate>
+  {% csrf_token %}
+  <!--{% load crispy_forms_tags %} {{form | crispy}} -->
+
+  {% for i in form %} {{i.label_tag}} {{i}} {{i.errors | striptags}} {%endfor %}
+  <br />
+  <button class="btn btn-primary" type="submit">Submit</button>
+</form>
+
+{% endblock contant %}
