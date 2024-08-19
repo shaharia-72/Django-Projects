@@ -1,0 +1,43 @@
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: rgb(240, 243, 245);
+}
+
+.form-check-label a {
+  color: black;
+  font-weight: bold;
+}
+
+.form-check-label a:hover {
+  text-decoration: underline;
+}
+
+/* Card styling */
+.card {
+  border-radius: 0.5rem;
+}
+
+.card-body {
+  padding: 1.25rem;
+}
+
+.card-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+.card-text {
+  font-size: 0.875rem;
+}
+
+.btn-secondary {
+  background-color: #6c757d;
+  border: none;
+}
+
+.btn-secondary:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}

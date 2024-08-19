@@ -1,0 +1,28 @@
+{% extends 'base.html' %} {% load crispy_forms_tags %}{% block content %}
+<!-- Heading -->
+<h1 style="display: flex; justify-content: center; align-items: center">
+  Login page
+</h1>
+
+<form
+  method="post"
+  style="width: 50%; height = 500px; margin: auto; margin-top: 50px;"
+  novalidate>
+  {% csrf_token %} {% for i in form %}
+  <div
+    style="
+      margin-bottom: 15px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    ">
+    {{ i.label_tag }} {{ i }} {{ i.errors|striptags }}
+  </div>
+  {% endfor %}
+
+  <div style="text-align: center">
+    <button class="btn btn-primary" type="submit">Login</button>
+  </div>
+</form>
+
+{% endblock content %}

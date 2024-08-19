@@ -1,0 +1,58 @@
+{% extends 'base.html' %} {% block content %}
+
+<!-- Container for layout -->
+<div class="container my-5">
+  <div class="row">
+    <!-- Sidebar for categories -->
+    <div class="col-md-3 mb-4">
+      <h4 class="text-center mb-4">Categories</h4>
+      {% for cat in category %}
+      <div class="form-check mb-2">
+        <input
+          class="form-check-input"
+          type="radio"
+          name="category"
+          id="{{cat.id}}" />
+        <label class="form-check-label" for="{{cat.id}}">
+          <a
+            href="{% url 'post_category' cat.slug %}"
+            class="text-decoration-none"
+            >{{cat.name}}</a
+          >
+        </label>
+      </div>
+      {% endfor %}
+    </div>
+
+    <!-- Posts section -->
+    <div class="col-md-9">
+      <div class="row">
+        {% for post in data %}
+        <div class="col-md-6 mb-4">
+          <div class="card border-light shadow-sm">
+            <div class="card-body">
+              <h5 class="card-title">{{post.title}}</h5>
+              <p class="card-text">{{post.content | truncatechars:150}}</p>
+              <p class="mb-1 text-muted">
+                Author: {{post.author.first_name}} {{post.author.last_name}}
+              </p>
+              <p class="mb-0">
+                Category: {% for cate in post.category.all %}
+                <button
+                  type="button"
+                  class="btn btn-secondary btn-sm mx-1"
+                  disabled>
+                  {{cate.name}}
+                </button>
+                {% endfor %}
+              </p>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock content %}

@@ -1,0 +1,56 @@
+{% extends 'base.html' %} {% block content %}
+<div class="container mt-1">
+  <div class="row">
+    <!-- Profile Details -->
+    <div class="col-lg-4 col-md-6 mb-4">
+      <div class="card shadow-sm">
+        <div class="card-header bg-primary text-white">
+          <h5 class="mb-0">Profile Details</h5>
+        </div>
+        <div class="card-body">
+          <table class="table table-bordered table-striped">
+            <tbody>
+              {% for detail in user_details %}
+              <tr>
+                <th scope="row">{{ detail.title }}</th>
+                <td>{{ detail.value }}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+          <a href="{% url 'profile_edit' %}" class="btn btn-primary w-100 mt-3"
+            >Edit Profile</a
+          >
+        </div>
+      </div>
+    </div>
+
+    <!-- Order History -->
+    <div class="col-lg-8 col-md-12">
+      <div class="card shadow-sm">
+        <div class="card-header bg-success text-white">
+          <h5 class="mb-0">Your Order History</h5>
+        </div>
+        <div class="card-body">
+          {% if orders %}
+          <ul class="list-group list-group-flush">
+            {% for order in orders %}
+            <li
+              class="list-group-item d-flex justify-content-between align-items-center">
+              <div>
+                <strong>{{ order.car.car_title }}</strong> - {{ order.quantity}}
+                units
+              </div>
+              <span class="badge bg-secondary">{{ order.OrderTime }}</span>
+            </li>
+            {% endfor %}
+          </ul>
+          {% else %}
+          <p class="text-center">You have no orders yet.</p>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock content %}

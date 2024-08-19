@@ -1,0 +1,82 @@
+{% extends 'base.html' %} {% load static %}
+
+<!--Title-->
+{% block title %}Home{% endblock %}
+
+<!--content-->
+{% block content %}
+
+<!--home first section-->
+<div class="container mt-5">
+  <div class="row align-items-center">
+    <div class="col-md-6 text-center text-md-left">
+      <h1 class="display-4 font-weight-bold">Welcome</h1>
+      <div class="mt-4">
+        <div class="mb-3">
+          <p class="lead">
+            Discover a wide selection of premium cars from top brands. Whether
+            you're looking for luxury, performance, or reliability, we have the
+            perfect car for you. Enjoy unbeatable prices and excellent customer
+            service. Your dream car is just a click away.
+          </p>
+        </div>
+        <div>
+          <a href="#" class="btn btn-outline-primary btn-lg mx-3">Buy Now</a>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <img
+        src="{% static 'images/car_home.png' %}"
+        class="img-fluid rounded"
+        alt="Car Image" />
+    </div>
+  </div>
+</div>
+
+<!-- home second category section -->
+<div class="container mt-5">
+  <div class="row">
+    <div class="col text-center">
+      <ul class="list-inline">
+        {% for brand in brands %}
+        <li class="list-inline-item">
+          <a
+            href="{% url 'category' brand.id %}"
+            class="btn btn-outline-primary btn-lg mx-2">
+            {{ brand.brand_name }}
+          </a>
+        </li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+
+  <!-- home third card section -->
+  <div class="row">
+    {% for car in cars %}
+    <div class="col-md-4 mb-4">
+      <div class="card shadow-sm">
+        <img
+          src="{{ car.car_image.url }}"
+          class="card-img-top"
+          alt="{{ car.car_title }}"
+          style="height: 200px; object-fit: cover" />
+        <div class="card-body">
+          <h5 class="card-title">{{ car.car_title }}</h5>
+          <p class="card-text">Price: ${{ car.car_price }}</p>
+          <a href="{% url 'car_detail' car.pk %}" class="btn btn-primary">
+            View Details
+          </a>
+        </div>
+      </div>
+    </div>
+    {% empty %}
+    <div class="col-12 text-center">
+      <p class="text-muted">No cars available.</p>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,50 @@
+{% extends 'base.html' %} {% block content %}
+
+<div class="d-flex flex-wrap mx-5 my-5">
+  <!--redio-->
+
+  <div class="col-2">
+    {% for cat in category %}
+    <div class="form-check">
+      <input
+        class="form-check-input"
+        type="radio"
+        name="category"
+        id="{{cat.id}}" />
+      <label class="form-check-label" for="{{cat.id}}">
+        <a href="{% url 'post_category' cat.slug %}"> {{cat.name}}</a>
+      </label>
+    </div>
+    {% endfor %}
+  </div>
+
+  <!--post-->
+
+  <div class="col-9">
+    <div class="d-flex flex-wrap justify-content-left px-5 pt-5">
+      {% for post in data %}
+      <div class="col-sm-6">
+        <div class="card mx-2 my-2">
+          <div class="card-body">
+            <h5 class="card-title">{{post.title}}</h5>
+            <p class="card-text">{{post.content | truncatechars:150}}</p>
+            <p>Author: {{post.author.first_name}} {{post.author.last_name}}</p>
+            <p>
+              Category: {% for cate in post.category.all %}
+              <button
+                type="button"
+                class="btn btn-secondary btn-sm my-1"
+                disabled>
+                {{cate.name}}
+              </button>
+              {%endfor%}
+            </p>
+          </div>
+        </div>
+      </div>
+
+      {% endfor %}
+    </div>
+  </div>
+</div>
+{% endblock content %}
