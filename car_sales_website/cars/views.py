@@ -19,7 +19,7 @@ class CarDetailView(DetailView):
     template_name = 'car_detail.html'
     context_object_name = 'car'
 
-    def post(self, request, *args, **kwargs):
+    def post(self):
         comment_form = forms.CommentForm(data=self.request.POST)
         car = self.get_object()
 

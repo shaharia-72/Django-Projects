@@ -8,7 +8,7 @@ from django.contrib.auth.views import LoginView
 from django.urls import reverse_lazy
 from django.contrib.auth import logout
 from django.views.generic import ListView
-from cars.models import Order, Car
+from cars.models import Order
 
 # Create your views here.
 

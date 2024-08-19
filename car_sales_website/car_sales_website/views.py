@@ -1,4 +1,3 @@
-from django.views.generic import TemplateView
 from cars.models import Car
 from django.views.generic import ListView
 from cars.models import Car
