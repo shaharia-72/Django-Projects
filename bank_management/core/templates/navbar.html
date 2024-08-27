@@ -1,0 +1,70 @@
+<nav class="bg-gray-900 text-white py-4">
+  <div class="container mx-auto flex justify-between items-center">
+    <!-- Left Side -->
+    <div class="flex items-center">
+      <a href="{% url 'home' %}" class="text-xl font-bold hover:text-gray-200"
+        >Home</a
+      >
+      {% if user.is_authenticated %}
+      <a
+        href="{% url 'transaction_report' %}"
+        class="ml-6 text-lg hover:text-gray-200"
+        >Report</a
+      >
+      <a
+        href="{% url 'withdraw_money' %}"
+        class="ml-6 text-lg hover:text-gray-200"
+        >Withdraw</a
+      >
+      <a
+        href="{% url 'deposit_money' %}"
+        class="ml-6 text-lg hover:text-gray-200"
+        >Deposit</a
+      >
+      <a
+        href="{% url 'loan_request' %}"
+        class="ml-6 text-lg hover:text-gray-200"
+        >Request Loan</a
+      >
+      <a href="{% url 'loan_list' %}" class="ml-6 text-lg hover:text-gray-200"
+        >My Loans</a
+      >
+      {% endif %}
+    </div>
+    <!-- Right Side -->
+    <div class="flex items-center">
+      {% if user.is_authenticated %}
+      <!-- Profile Icon and Name -->
+      <span class="ml-6 flex items-center">
+        <i class="fas fa-user-circle text-xl mr-2"></i>
+        <a
+          href="{% url 'user_profile' %}"
+          class="text-white-500 hover:no-underline">
+          {{ request.user.get_full_name }}
+        </a>
+      </span>
+
+      <!-- Balance Display -->
+      <span class="ml-6 flex items-center">
+        <i class="fa-solid fa-scale-balanced mr-2" style="color: #ffffff"></i>
+        {{ request.user.account.balance }}
+      </span>
+
+      <!-- Logout -->
+      <a href="{% url 'user_logout' %}" class="ml-6 text-lg hover:text-gray-200"
+        >Logout</a
+      >
+      {% else %}
+      <!-- Login and Register Links -->
+      <a href="{% url 'user_login' %}" class="ml-6 text-lg hover:text-gray-200"
+        >Login</a
+      >
+      <a
+        href="{% url 'user_register' %}"
+        class="ml-6 text-lg hover:text-gray-200"
+        >Register</a
+      >
+      {% endif %}
+    </div>
+  </div>
+</nav>

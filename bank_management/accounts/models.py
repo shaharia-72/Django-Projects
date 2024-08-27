@@ -29,7 +29,7 @@ class BankAccountPersonal(models.Model):
     balance = models.DecimalField(default=0, max_digits=12, decimal_places=2)
 
     def __str__(self):
-        return f"{self.user.first_name} {self.user.last_name} {self.account_no}"
+        return f"Account owner name--> {self.user.first_name} {self.user.last_name} | Account number--> {self.account_no} |"
 
 
 class BankAccountAddress(models.Model):
@@ -37,9 +37,9 @@ class BankAccountAddress(models.Model):
         User, related_name="address", on_delete=models.CASCADE)
 
     street_address = models.CharField(max_length=50)
-    city = models.CharField(max_length=20)
-    county = models.CharField(max_length=20)
     postal_code = models.CharField(max_length=10)
+    city = models.CharField(max_length=20)
+    country = models.CharField(max_length=20)
 
     def __str__(self):
-        return f"{self.user.first_name} {self.user.last_name} {self.user.email}"
+        return f"Account username--> {self.user.username} | Account name--> {self.user.first_name} {self.user.last_name} |"

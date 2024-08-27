@@ -1,0 +1,83 @@
+{% extends 'base.html' %} {% block title %}
+<title>User Profile</title>
+{% endblock %} {% block body %}
+<div class="container mx-auto max-w-4xl p-6 bg-white shadow-md rounded-lg">
+  <h2 class="text-4xl font-extrabold mb-4 text-gray-800">User Profile</h2>
+
+  <!-- Profile Information -->
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <!-- Profile Details -->
+    <div class="space-y-4">
+      <div class="bg-gray-100 p-4 rounded-lg shadow-sm">
+        <h3 class="text-2xl font-extrabold text-gray-700">
+          Personal Information
+        </h3>
+        <p>
+          <span class="font-bold">Name:</span> {{ user.first_name }}
+          {{user.last_name }}
+        </p>
+        <p><span class="font-bold">Email:</span> {{ user.email }}</p>
+        <p>
+          <span class="font-bold">Date of Birth:</span>
+          {{user.account.birth_date}}
+        </p>
+        <p><span class="font-bold">Gender:</span> {{ user.account.gender }}</p>
+      </div>
+
+      <div class="bg-gray-100 p-4 rounded-lg shadow-sm">
+        <h3 class="text-2xl font-extrabold text-gray-700">Address</h3>
+        <p>
+          <span class="font-bold">Street Address:</span>
+          {{user.address.street_address}}
+        </p>
+        <p><span class="font-bold">City:</span> {{ user.address.city }}</p>
+        <p>
+          <span class="font-bold">Country:</span> {{ user.address.country }}
+        </p>
+        <p>
+          <span class="font-bold">Postal Code:</span>
+          {{user.address.postal_code}}
+        </p>
+      </div>
+    </div>
+
+    <!-- Account Details -->
+    <div class="space-y-4">
+      <div class="bg-gray-100 p-4 rounded-lg shadow-sm">
+        <h3 class="text-2xl font-extrabold font-semibold text-gray-700">
+          Account Details
+        </h3>
+        <p>
+          <span class="font-bold">Account Number:</span>
+          {{user.account.account_no }}
+        </p>
+        <p>
+          <span class="font-bold">Account Balance:</span>
+          {{user.account.balance }}
+        </p>
+        <p>
+          <span class="font-bold">Account Type:</span>
+          {{user.account.account_type }}
+        </p>
+
+        <p>
+          <span class="font-bold">Account Opend At:</span>
+          {{user.account.initial_deposit_date }}
+        </p>
+      </div>
+
+      <div class="flex justify-end">
+        <button
+          class="bg-yellow-500 text-black font-bold rounded px-4 py-2 mx-3 mt-1.5">
+          <a href="{%url 'user_edit_profile'%}"> Edit Profile </a>
+        </button>
+
+        <button
+          class="bg-red-500 text-black font-bold rounded px-4 py-2 mx-3 mt-1.5">
+          <a> Change Password </a>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

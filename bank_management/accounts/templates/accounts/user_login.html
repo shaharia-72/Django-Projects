@@ -1,0 +1,70 @@
+{% extends 'base.html' %}{% block title %}<title>Login</title>{% endblock %}
+{%block body%}
+<div class="flex items-center justify-center mt-8">
+  <div class="w-full max-w-md bg-white rounded-lg shadow-lg p-8">
+    <h2 class="text-3xl font-semibold mb-6 text-gray-800 text-center">Login</h2>
+    <form method="post" novalidate class="space-y-6">
+      {% csrf_token %}
+
+      <!-- Username -->
+      <div class="form-group">
+        <label
+          for="{{ form.username.id_for_label }}"
+          class="block text-sm font-medium text-gray-700 mb-2">
+          Username:
+        </label>
+        <input
+          type="text"
+          id="{{ form.username.id_for_label }}"
+          name="{{ form.username.name }}"
+          value="{{ form.username.value|default_if_none:'' }}"
+          class="block w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+          aria-describedby="{{ form.username.id_for_label }}-error"
+          aria-invalid="{{ form.username.errors  }}" />
+        {% if form.username.errors %}
+        <div
+          id="{{ form.username.id_for_label }}-error"
+          class="text-red-600 mt-2 text-sm">
+          {% for error in form.username.errors %} {{ error }} {% endfor %}
+        </div>
+        {% endif %}
+      </div>
+
+      <!-- Password -->
+      <div class="form-group">
+        <label
+          for="{{ form.password.id_for_label }}"
+          class="block text-sm font-medium text-gray-700 mb-2">
+          Password:
+        </label>
+        <input
+          type="password"
+          id="{{ form.password.id_for_label }}"
+          name="{{ form.password.name }}"
+          class="block w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+          aria-describedby="{{ form.password.id_for_label }}-error"
+          aria-invalid="{{ form.password.errors  }}" />
+        {% if form.password.errors %}
+        <div
+          id="{{ form.password.id_for_label }}-error"
+          class="text-red-600 mt-2 text-sm">
+          {% for error in form.password.errors %} {{ error }} {% endfor %}
+        </div>
+        {% endif %}
+      </div>
+
+      <!-- Hidden Fields -->
+      {% for hidden_field in form.hidden_fields %} {{ hidden_field }} {%endfor%}
+
+      <!-- Submit Button -->
+      <div class="form-group mt-6">
+        <button
+          type="submit"
+          class="w-full py-2 px-4 bg-blue-500 hover:bg-blue-700 text-white font-semibold rounded-lg transition duration-200">
+          Login
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock body %}
