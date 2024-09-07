@@ -4,15 +4,15 @@ from .models import Transactions
 class TransactionForm(forms.ModelForm):
     class Meta:
         model = Transactions
-        fields = ['amount','Transaction_type']
+        fields = ['amount','transaction_type']
     
     def __init__(self, *args, **kwargs):
         self.account = kwargs.pop('account')
-        super.__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.fields['transaction_type'].disabled = True
-        self.fields['transaction_type'].widget = forms.HiddenInput
+        self.fields['transaction_type'].widget = forms.HiddenInput(attrs={'class': 'hidden'})
 
-    def save(self, commit = True):
+    def save(self, commit=True):
         self.instance.account = self.account
         self.instance.balance_after_transaction = self.account.balance
         return super().save()
@@ -40,7 +40,7 @@ class WithdrawForm(TransactionForm):
         if amount > mix_withdraw_amount:
             raise forms.ValidationError(f'amount must be greater than {mix_withdraw_amount} taka')
         
-        if amount<balance:
+        if amount>balance:
             raise forms.ValidationError(f'insufficient balance, you have {balance} taka in your account')
 
         return amount

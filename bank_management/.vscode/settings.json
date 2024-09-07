@@ -1,5 +1,7 @@
 {
   "spellright.language": ["en"],
   "spellright.documentTypes": ["markdown", "latex", "plaintext"],
-  "cSpell.words": ["succesfully"]
+  "cSpell.words": ["succesfully"],
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "notebook.defaultFormatter": "esbenp.prettier-vscode"
 }

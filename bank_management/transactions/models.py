@@ -8,10 +8,14 @@ class Transactions(models.Model):
 
     amount = models.DecimalField( max_digits=10, decimal_places=2)
     balance_after_transaction = models.DecimalField( max_digits=10, decimal_places=2)
-    Transaction_type = models.IntegerField(choices=TRANSACTION_TYPE,null=True)
+    transaction_type = models.IntegerField(choices=TRANSACTION_TYPE,null=True)
     time_tamp = models.DateTimeField( auto_now_add=True)
     loan_approved = models.BooleanField( default=False)
 
     class Meta:
         ordering =['time_tamp']
+
+    def __str__(self):
+        return f"Account owner name--> {self.account.user.first_name}"
+
 

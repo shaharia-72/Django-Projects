@@ -29,7 +29,7 @@ class BankAccountPersonal(models.Model):
     balance = models.DecimalField(default=0, max_digits=12, decimal_places=2)
 
     def __str__(self):
-        return f"Account owner name--> {self.user.first_name} {self.user.last_name} | Account number--> {self.account_no} |"
+        return f"{self.user.first_name} {self.user.last_name} | Account number--> {self.account_no} |"
 
 
 class BankAccountAddress(models.Model):

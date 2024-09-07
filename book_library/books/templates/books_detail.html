@@ -1,0 +1,88 @@
+{% extends 'base.html' %}
+{% load widget_tweaks %}
+
+{% block title %}
+  <title>{{ book.books_title }} - Detail</title>
+{% endblock %}
+
+{% block body %}
+  <div class="container mx-auto mt-10 px-4">
+    <!-- Book Detail -->
+    <div class="flex flex-col md:flex-row bg-white rounded-lg shadow-lg overflow-hidden">
+      <!-- Image Section -->
+      <div class="md:w-1/2 p-4">
+        <img src="{{ book.books_image.url }}" class="w-full h-full object-cover rounded-lg" alt="{{ book.books_title }}" style="max-height: 400px;" />
+      </div>
+
+      <!-- Details Section -->
+      <div class="md:w-1/2 p-4 flex flex-col justify-between">
+        <div>
+          <h1 class="text-4xl font-bold text-gray-800 mb-4">{{ book.books_title }}</h1>
+
+          <!-- Description with fixed height -->
+          <div class="text-lg text-gray-600 mb-4">
+            <strong class="text-gray-800">Description:</strong>
+            <p class="overflow-auto h-48" style="max-width: 100%;">{{ book.books_descriptions }}</p>
+          </div>
+
+          <h4 class="text-xl font-semibold text-gray-800"><strong>Author:</strong> {{ book.books_author_name }}</h4>
+          <h4 class="text-xl font-semibold text-gray-800"><strong>ISBN number:</strong> {{ book.books_ISBN }}</h4>
+          <h4 class="text-xl font-semibold text-gray-800 mb-2"><strong>Points:</strong> {{ book.books_price }}</h4>
+        </div>
+
+        <!-- Borrow Now Button -->
+        <button onclick="openModal()" class="w-full bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition duration-300">Borrow Now</button>
+      </div>
+    </div>
+
+    <!-- Modal Structure -->
+    <div id="orderModal" class="fixed inset-0 bg-gray-800 bg-opacity-75 flex items-center justify-center hidden">
+      <div class="bg-white rounded-lg shadow-lg p-6 w-full max-w-md">
+        <h2 class="text-2xl font-bold mb-4">Confirm Borrow</h2>
+
+        <!-- Available Quantity Message -->
+        <p class="text-lg text-gray-700 mb-2">
+          <strong>Available Quantity:</strong> {{ book.books_quantity }}
+        </p>
+
+        <!-- Confirmation Message -->
+        <p class="text-gray-600 mb-4">To confirm borrowing this book, please review the details below.</p>
+
+        <form id="borrowForm" method="post" action="{% url 'confirm_order' book.pk %}">
+          {% csrf_token %}
+          <input type="hidden" name="quantity" value="1" />
+
+          <div class="mb-4">
+            <label for="email" class="block text-gray-700">Email Address:</label>
+            <input type="email" id="email" name="email" class="border border-gray-300 rounded-lg p-2 focus:ring-blue-500 focus:border-blue-500 w-full" value="{{ user.email }}" readonly />
+          </div>
+
+          <div class="mb-4">
+            <label for="rental_days" class="block text-gray-700">Rental Days:</label>
+            <input type="number" id="rental_days" name="rental_days" class="border border-gray-300 rounded-lg p-2 focus:ring-blue-500 focus:border-blue-500 w-full" min="1" value="7" required />
+          </div>
+
+          <div class="flex justify-end">
+            <button type="button" onclick="closeModal()" class="bg-gray-500 text-white px-4 py-2 rounded-lg mr-2 hover:bg-gray-600">Cancel</button>
+            <button type="button" onclick="submitForm()" class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600">Confirm</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- JavaScript for Modal -->
+  <script>
+    function openModal() {
+      document.getElementById('orderModal').classList.remove('hidden')
+    }
+    
+    function closeModal() {
+      document.getElementById('orderModal').classList.add('hidden')
+    }
+    
+    function submitForm() {
+      document.getElementById('borrowForm').submit()
+    }
+  </script>
+{% endblock %}

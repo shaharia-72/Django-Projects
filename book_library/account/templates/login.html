@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+{% load widget_tweaks %}
+{% block title %}
+  <title>Login</title>
+{% endblock %}
+
+{% block body %}
+  <div class="container mx-auto max-w-md p-6 bg-white shadow-lg rounded-lg">
+    <h2 class="text-2xl font-bold mb-6 text-center text-gray-800">Login</h2>
+    <form method="post" novalidate class="space-y-6">
+      {% csrf_token %}
+
+      <!-- Username -->
+      <div class="flex flex-col space-y-4">
+        <label for="{{ form.username.id_for_label }}" class="text-sm font-medium text-gray-700">Username:</label>
+        {{ form.username|add_class:'border border-gray-300 rounded-lg p-2 focus:ring-blue-500 focus:border-blue-500 w-full' }}
+        {% if form.username.errors %}
+          <div class="text-red-600 text-xs mt-1">
+            {% for error in form.username.errors %}
+              <p>{{ error }}</p>
+            {% endfor %}
+          </div>
+        {% endif %}
+      </div>
+
+      <!-- Password -->
+      <div class="flex flex-col space-y-4">
+        <label for="{{ form.password.id_for_label }}" class="text-sm font-medium text-gray-700">Password:</label>
+        {{ form.password|add_class:'border border-gray-300 rounded-lg p-2 focus:ring-blue-500 focus:border-blue-500 w-full' }}
+        {% if form.password.errors %}
+          <div class="text-red-600 text-xs mt-1">
+            {% for error in form.password.errors %}
+              <p>{{ error }}</p>
+            {% endfor %}
+          </div>
+        {% endif %}
+      </div>
+
+      <!-- Remember Me -->
+      <div class="flex items-center space-x-2">
+        {{ form.remember_me|add_class:'h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500' }}
+        <label for="{{ form.remember_me.id_for_label }}" class="text-sm font-medium text-gray-700">Remember me</label>
+      </div>
+
+      <!-- Submit Button -->
+      <div class="text-center">
+        <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg">Login</button>
+      </div>
+
+      <!-- Forgot Password Link -->
+      <div class="text-center">
+        <a class="text-sm text-blue-500 hover:text-blue-700">Forgot your password?</a>
+      </div>
+    </form>
+  </div>
+{% endblock %}

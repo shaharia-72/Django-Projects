@@ -1,4 +1,3 @@
-from typing import Any
 from django.contrib.auth.forms import UserCreationForm
 from .constants import ACCOUNT_TYPE, GENDER_TYPE
 from django import forms
