@@ -19,7 +19,7 @@ class Books(models.Model):
         BooksCategory, related_name="books", on_delete=models.CASCADE)
 
     def __str__(self):
-        return self.books_title
+        return self.books_title 
 
 class BorrowBooks(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -40,6 +40,9 @@ class BorrowBooks(models.Model):
         if self.returned_on and self.returned_on > self.return_due_date:
             return (self.returned_on - self.return_due_date).days
         return 0
+    
+    def is_returned(self):
+        return self.returned_on is not None
 
     def __str__(self):
         return f'{self.book.books_title} borrowed by {self.user.username}'
@@ -63,3 +66,11 @@ class RentalBooks(models.Model):
 
     def __str__(self):
         return f"{self.user} - {self.book.title}"
+
+
+class Coupon(models.Model):
+    points = models.PositiveIntegerField()
+    price = models.DecimalField(max_digits=8, decimal_places=2)
+    
+    def __str__(self):
+        return f"{self.points} points for {self.price} TAKA"

@@ -1,0 +1,41 @@
+{% extends 'base_profile.html' %}
+
+{% block content %}
+  <table class="table-auto w-full text-left">
+    <thead>
+      <tr>
+        <th class="px-4 py-2">Book Title</th>
+        <th class="px-4 py-2">Status</th>
+        <th class="px-4 py-2">Borrowed On</th>
+        <th class="px-4 py-2">Due Date</th>
+        <th class="px-4 py-2">Returned On</th>
+        <th class="px-4 py-2">Late</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- Borrowed Books -->
+      {% for book in borrowed_books %}
+        <tr class="bg-gray-100">
+          <td class="border px-4 py-2">{{ book.book.books_title }}</td>
+          <td class="border px-4 py-2">Borrowed</td>
+          <td class="border px-4 py-2">{{ book.borrowed_on }}</td>
+          <td class="border px-4 py-2">{{ book.return_due_date }}</td>
+          <td class="border px-4 py-2">Not yet returned</td>
+          <td class="border px-4 py-2">N/A</td>
+        </tr>
+      {% endfor %}
+
+      <!-- Returned Books -->
+      {% for book in returned_books %}
+        <tr class="bg-white">
+          <td class="border px-4 py-2">{{ book.book.books_title }}</td>
+          <td class="border px-4 py-2">Returned</td>
+          <td class="border px-4 py-2">{{ book.borrowed_on }}</td>
+          <td class="border px-4 py-2">{{ book.return_due_date }}</td>
+          <td class="border px-4 py-2">{{ book.returned_on }}</td>
+          <td class="border px-4 py-2">{{ book.is_returned_on_time|yesno:'No,Yes' }}</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% endblock %}
