@@ -134,20 +134,16 @@ class CouponView(ListView):
 class CouponConfirmView(FormView):
   
     def post(self, request, *args, **kwargs):
-        form = self.get_form()
-        if form.is_valid():
-            coupon_id = self.kwargs['coupon_id']
-            coupon = get_object_or_404(Coupon, id=coupon_id)
-            user_account = PersonalAccount.objects.get(user=request.user)
-            
-            # Check if the user has enough points to buy the coupon
-            if user_account.points >= coupon.price:
-                user_account.points += coupon.points
-                user_account.save()
-                messages.success(request, f'Coupon purchased successfully! {coupon.points} points added to your account.')
-            else:
-                messages.error(request, 'Insufficient points to purchase this coupon.')
-            
-            return redirect(reverse('coupons'))
+        coupon_id = self.kwargs['coupon_id']
+        coupon = get_object_or_404(Coupon, id=coupon_id)
+        user_account = PersonalAccount.objects.get(user=request.user)
+        
+
+        if user_account.points >= coupon.price:
+            user_account.points += coupon.points
+            user_account.save()
+            messages.success(request, f'Coupon purchased successfully! {coupon.points} points added to your account.')
         else:
-            return self.form_invalid(form)
+            messages.error(request, 'Insufficient points to purchase this coupon.')
+        
+        return redirect(reverse('coupons'))

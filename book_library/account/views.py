@@ -1,4 +1,4 @@
-from django.shortcuts import render,redirect
+from django.shortcuts import redirect
 from django.views.generic import FormView
 from .forms import RegistrationsForm
 from django.urls import reverse_lazy
@@ -12,9 +12,10 @@ from .models import PersonalAccount
 
 # Create your views here.
 
+#! user registration views
 class RegistrationsView(FormView):
-    template_name = 'registrations.html'
     form_class = RegistrationsForm
+    template_name = 'registrations.html'
     success_url = reverse_lazy('home')
 
     def form_valid(self, form):
@@ -22,17 +23,21 @@ class RegistrationsView(FormView):
         login(self.request, user)
         return super().form_valid(form)
 
+
+#! user login views
 class UserLoginView(LoginView):
     template_name = 'login.html'
 
     def get_success_url(self):
         return reverse_lazy('home')
-    
+
+#! user logout views
+
 def UserLogOutView(request):
     logout(request)
     return redirect ('home')
 
-
+#! user profile update views
 class ProfileUpdateView(LoginRequiredMixin, UpdateView):
     model = User
     form_class = ProfileForm
@@ -44,11 +49,8 @@ class ProfileUpdateView(LoginRequiredMixin, UpdateView):
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['active_page'] = 'profile'
+        context['active_page'] = 'profile'  #! pass profile for making hover in template
 
-        try:
-            personal_account = PersonalAccount.objects.get(user=self.request.user)
-            context['points'] = personal_account.points
-        except PersonalAccount.DoesNotExist:
-            context['points'] = 0
+        personal_account = PersonalAccount.objects.get(user=self.request.user)
+        context['points'] = personal_account.points
         return context

@@ -1,57 +1,44 @@
-{% extends 'base.html' %} {% block body %}
-  {% load static %}
-  <div class="flex mt-10">
-    <!-- Left side menu -->
-    <aside class="w-1/4 bg-white shadow-md rounded-lg p-4">
-      <ul class="space-y-4">
-        <li>
-          <a href="{% url 'my_books' %}"
-            class="block text-center font-semibold py-2 px-4 rounded-lg transition duration-300 {% if active_page == 'my_books' %}
-               bg-blue-700 text-white hover:bg-blue-800
-            {% else %}
-               bg-gray-300 text-gray-700 hover:bg-gray-400
-            {% endif %}">
-            My Books
-          </a>
-        </li>
-        <li>
-          <a href="{% url 'user_profile' %}"
-            class="block text-center font-semibold py-2 px-4 rounded-lg transition duration-300 {% if active_page == 'profile' %}
-               bg-blue-700 text-white hover:bg-blue-800
-            {% else %}
-               bg-gray-300 text-gray-700 hover:bg-gray-400
-            {% endif %}">
-            Profile
-          </a>
-        </li>
-        <li>
-          <a href="{% url 'coupons' %}"
-            class="block text-center font-semibold py-2 px-4 rounded-lg transition duration-300 {% if active_page == 'coupons' %}
-               bg-blue-700 text-white hover:bg-blue-800
-            {% else %}
-               bg-gray-300 text-gray-700 hover:bg-gray-400
-            {% endif %}">
-            Balance
-          </a>
-        </li>
-        <li>
-          <a href="{% url 'history' %}"
-            class="block text-center font-semibold py-2 px-4 rounded-lg transition duration-300 {% if active_page == 'history' %}
-               bg-blue-700 text-white hover:bg-blue-800
-            {% else %}
-               bg-gray-300 text-gray-700 hover:bg-gray-400
-            {% endif %}">
-            History
-          </a>
-        </li>
-      </ul>
-    </aside>
+{% extends 'base.html' %} {% block body %} {% load static %}
+<div class="flex mt-10">
+  <!-- Left side menu -->
+  <aside class="w-1/4 bg-white shadow-md rounded-lg p-4">
+    <ul class="space-y-4">
+      <li>
+        <a
+          href="{% url 'my_books' %}"
+          class="block text-center font-semibold py-2 px-4 rounded-lg transition duration-300 {% if active_page == 'my_books' %} bg-blue-700 text-white hover:bg-blue-800 {% else %} bg-gray-300 text-gray-700 hover:bg-gray-400 {% endif %}">
+          My Books
+        </a>
+      </li>
+      <li>
+        <a
+          href="{% url 'user_profile' %}"
+          class="block text-center font-semibold py-2 px-4 rounded-lg transition duration-300 {% if active_page == 'profile' %} bg-blue-700 text-white hover:bg-blue-800 {% else %} bg-gray-300 text-gray-700 hover:bg-gray-400 {% endif %}">
+          Profile
+        </a>
+      </li>
+      <li>
+        <a
+          href="{% url 'coupons' %}"
+          class="block text-center font-semibold py-2 px-4 rounded-lg transition duration-300 {% if active_page == 'coupons' %} bg-blue-700 text-white hover:bg-blue-800 {% else %} bg-gray-300 text-gray-700 hover:bg-gray-400 {% endif %}">
+          Buy points
+        </a>
+      </li>
+      <li>
+        <a
+          href="{% url 'history' %}"
+          class="block text-center font-semibold py-2 px-4 rounded-lg transition duration-300 {% if active_page == 'history' %} bg-blue-700 text-white hover:bg-blue-800 {% else %} bg-gray-300 text-gray-700 hover:bg-gray-400 {% endif %}">
+          History
+        </a>
+      </li>
+    </ul>
+  </aside>
 
-    <!-- Right side dynamic content -->
-    <div class="w-3/4 bg-white shadow-md rounded-lg p-6">
-      {% block content %}
-        <!-- Dynamic content goes here -->
-      {% endblock %}
-    </div>
+  <!-- Right side dynamic content -->
+  <div class="w-3/4 bg-white shadow-md rounded-lg p-6">
+    {% block content %}
+    <!-- Dynamic content goes here -->
+    {% endblock %}
   </div>
+</div>
 {% endblock %}

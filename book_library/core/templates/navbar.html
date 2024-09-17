@@ -4,8 +4,9 @@
     <div class="flex items-center">
       <a href="{% url 'home' %}" class="text-xl font-bold hover:text-gray-200">Home</a>
       {% if user.is_authenticated %}
-        <a class="ml-6 text-lg hover:text-gray-200">Report</a>
-        <a class="ml-6 text-lg hover:text-gray-200">Deposit</a>
+        <a href="{% url 'my_books' %}" class="ml-6 text-lg hover:text-gray-200">My books</a>
+        <a href="{% url 'coupons' %}" class="ml-6 text-lg hover:text-gray-200">Buy points</a>
+        <a href="{% url 'history' %}" class="ml-6 text-lg hover:text-gray-200">History</a>
       {% endif %}
     </div>
 

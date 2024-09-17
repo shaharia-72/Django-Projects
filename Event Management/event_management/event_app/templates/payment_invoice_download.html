@@ -1,0 +1,9 @@
+{% extends 'base' %}
+{% block body %}
+  <div class="container">
+    <h1 class="my-4">Payment Invoice</h1>
+    <p>
+      Your invoice is being generated. If it doesn't start downloading automatically, <a href="{{ request.get_full_path }}">click here</a> to download.
+    </p>
+  </div>
+{% endblock %}
