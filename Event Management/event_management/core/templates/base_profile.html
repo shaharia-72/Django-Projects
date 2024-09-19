@@ -5,22 +5,32 @@
     <ul class="space-y-4">
       <li>
         <a
-          href="#"
-          class="block text-center font-semibold py-2 px-4 rounded-lg transition duration-300 {% if active_page == 'my_books' %} bg-blue-700 text-white hover:bg-blue-800 {% else %} bg-gray-300 text-gray-700 hover:bg-gray-400 {% endif %}">
+          href="{% url 'participant_event_interest' %}"
+          class="block text-center font-bold py-2 px-4 rounded-lg transition duration-300 {% if active_page == 'my_interest' %} bg-blue-700 text-black hover:bg-blue-800 text-decoration-none {% else %} bg-gray-300 text-black font-bold text-decoration-none {% endif %}">
           My interest
         </a>
       </li>
       <li>
+        {% if user.is_organizer %}
         <a
-          href="#"
-          class="block text-center font-semibold py-2 px-4 rounded-lg transition duration-300 {% if active_page == 'profile' %} bg-blue-700 text-white hover:bg-blue-800 {% else %} bg-gray-300 text-gray-700 hover:bg-gray-400 {% endif %}">
+          href="{% url 'organizer_profile' %}"
+          class="block text-center font-bold py-2 px-4 rounded-lg transition duration-300 {% if active_page == 'profile' %} bg-blue-700 text-black hover:bg-blue-800 text-decoration-none {% else %} bg-gray-300 text-black font-bold text-decoration-none {% endif %}">
           Profile
         </a>
+
+        {% elif user.is_participant %}
+        <a
+          href="{% url 'participant_profile' %}"
+          class="block text-center font-bold py-2 px-4 rounded-lg transition duration-300 {% if active_page == 'profile' %} bg-blue-700 text-black hover:bg-blue-800 text-decoration-none {% else %} bg-gray-300 text-black font-bold text-decoration-none {% endif %}">
+          Profile
+        </a>
+        {%endif%}
       </li>
+
       <li>
         <a
-          href="#"
-          class="block text-center font-semibold py-2 px-4 rounded-lg transition duration-300 {% if active_page == 'history' %} bg-blue-700 text-white hover:bg-blue-800 {% else %} bg-gray-300 text-gray-700 hover:bg-gray-400 {% endif %}">
+          href="{% url 'participant_history' %}"
+          class="block text-center font-bold py-2 px-4 rounded-lg transition duration-300 {% if active_page == 'history' %} bg-blue-700 text-black hover:bg-blue-800 text-decoration-none {% else %} bg-gray-300 text-black font-bold text-decoration-none {% endif %}">
           History
         </a>
       </li>

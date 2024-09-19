@@ -41,7 +41,7 @@ class Event(models.Model):
     event_start_date = models.DateTimeField()
 
     def save(self, *args, **kwargs):
-        if  self.event_id:
+        if not self.event_id:
             self.event_id = self.generate_unique_event_id()
         super().save(*args, **kwargs)
 
@@ -61,6 +61,8 @@ class Participation(models.Model):
     transition_id = models.CharField(max_length=11, default=''.join(random.choices(string.ascii_uppercase, k=4)) + '-' + ''.join(random.choices(string.digits, k=6)))
     status = models.CharField(max_length=20, choices=(('pending', 'Pending'), ('confirmed', 'Confirmed')))
     number_of_participants = models.PositiveIntegerField()
+    event_created_at = models.DateTimeField(auto_now_add = True)
+    is_payment_confirmed = models.BooleanField(default=False)
 
     def __str__(self):
-        return f"{self.participant.user.username} - {self.event.event_title}"
+        return f"{self.participant.user.username} - {self.status} - {self.is_payment_confirmed}"

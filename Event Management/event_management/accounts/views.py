@@ -150,30 +150,86 @@ class CustomLoginView(LoginView):
     template_name = 'login.html'
 
     def get_success_url(self):
-        return reverse_lazy('home')
+
+        user = self.request.user
+        if user.is_organizer:
+            return reverse_lazy('or-home')
+        elif user.is_participant:
+            return reverse_lazy('home')
+        else:
+            return reverse_lazy('lo-home')
 
 
 @login_required
 def logout_view(request):
     logout(request)
-    return redirect('login')
+    return redirect('lo-home')
 
+class ParticipantProfileView(LoginRequiredMixin, TemplateView):
+    template_name = 'participant_profile.html' 
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        participant = Participant.objects.get(user=self.request.user)
+        context['profile'] = participant
+        context['active_page'] = 'profile'
+
+        return context
+
+
+class OrganizerProfileView(LoginRequiredMixin, TemplateView):
+    template_name = 'organizer_profile.html' 
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        organizer = Organizer.objects.get(user=self.request.user)
+        context['profile'] = organizer
+        context['active_page'] = 'profile'
+        return context
 
 
 class ParticipantProfileUpdateView(LoginRequiredMixin,UpdateView):
-    model = CustomUser
+    model = Participant
     form_class = ParticipantProfileUpdateForm
     template_name = 'update_participant_profile.html'
-    success_url = ('profile')
+    # success_url = ('participant_profile')
 
     def get_object(self, queryset=None):
-        return self.request.user
+        # return self.request.user
+        return Participant.objects.get(user = self.request.user)
+    
+    def form_valid(self, form):
+        # user = form.save(commit=False)
+        # user.save()
+        participant = form.save(commit=False)
+        participant.user.save()
+        participant.save()
+        return super().form_valid(form)
+    
+    def get_success_url(self):
+        return reverse_lazy('participant_profile')
     
 class OrganizerProfileUpdateView(LoginRequiredMixin,UpdateView):
-    model = CustomUser
+    model = Organizer
     form_class = OrganizerProfileUpdateForm
-    template_name = 'update_Organizer_profile.html'
-    success_url = ('profile')
+    template_name = 'update_organizer_profile.html'
+    # success_url = ('organizer_profile')
 
     def get_object(self, queryset=None):
-        return self.request.user
+        # return self.request.user
+        return Organizer.objects.get(user = self.request.user)
+
+
+    def form_valid(self, form):
+        # user = form.save(commit=False)
+        # user.save()
+        organizer = form.save(commit=False)
+        organizer.user.email = form.cleaned_data['email']
+        # organizer.user = self.request.user
+        organizer.user.save()
+        # organizer.user.save()
+        organizer.save()
+        return super().form_valid(form)
+    
+    def get_success_url(self):
+        return reverse_lazy('organizer_profile')

@@ -19,10 +19,16 @@ from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 from  core.views import HomePage
+from event_app.views import ParticipantEventView
+from event_app.views import OrganizerEventView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', HomePage.as_view(), name='home'),
+    # path('', participant_event.as_view(), name='home'),
+    path('', ParticipantEventView.as_view(), name='lo-home'),
+    path('Participant', ParticipantEventView.as_view(), name='home'),
+    path('organizer', OrganizerEventView.as_view(), name='or-home'),
+    # path('', OrganizerEventView.as_view(), name='organizer-home'),
     path('accounts/', include('accounts.urls')),
     path('event_app/', include('event_app.urls')),
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

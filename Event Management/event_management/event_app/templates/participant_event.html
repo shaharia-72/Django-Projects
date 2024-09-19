@@ -1,7 +1,4 @@
-{% extends 'base.html' %}
-{% load static %}
-
-{% block body %}
+{% extends 'base.html' %} {% load static %} {% block body %}
   <div class="container mt-5">
     <!-- Hero Section -->
     <div class="row my-5 align-items-center">
@@ -9,108 +6,107 @@
         <h1 class="display-4 font-weight-bold">Welcome</h1>
         <p class="mt-4 lead text-muted">Discover a wide selection of premium events. Enjoy great experiences and engage in top-tier events, all just a click away.</p>
       </div>
-      <div class="col-md-6 text-center">
-        <img src="{% static 'images/event.png' %}" class="img-fluid rounded shadow-lg" alt="Event Image" />
+    </div>
+
+    <!-- Main Section with Categories and Events -->
+    <div class="row mt-5">
+      <!-- Categories Section (3 columns) -->
+      <div class="col-md-3">
+        <h5 class="mb-3 my-3">Categories</h5>
+        <ul class="list-group">
+          {% for category in categories %}
+            <a class="list-group-item list-group-item-action" href="{% url 'category' category.id %}">{{ category.category_name }}</a>
+          {% empty %}
+            <li class="list-group-item">No categories available.</li>
+          {% endfor %}
+        </ul>
       </div>
-    </div>
 
-    <!-- Home Second Category Section -->
-    <div class="text-center mt-5">
-      <ul class="list-inline">
-        {% for brand in brands %}
-          <li class="list-inline-item">
-            <a href="#" class="btn btn-primary">{{ brand.brand_name }}</a>
-          </li>
-        {% endfor %}
-      </ul>
-    </div>
-
-    <!-- Upcoming Events Section -->
-    <h2 class="text-center my-4">Upcoming Events</h2>
-    <div class="row">
-      {% for event in events %}
-        <div class="col-lg-3 col-md-6 col-sm-12 mb-4">
-          <div class="card border-primary" style="height: 100%;">
-            {% if event.event_image %}
-              <img src="{{ event.event_image.url }}" class="card-img-top" alt="{{ event.event_title }}" style="object-fit: cover; height: 150px;" />
-            {% else %}
-              <img src="{% static 'images/default_event.svg' %}" class="card-img-top" alt="Default Image" style="object-fit: cover; height: 150px;" />
-            {% endif %}
-            <div class="card-body d-flex flex-column" style="height: 100%;">
-              <h6 class="card-title">{{ event.event_title }}</h6>
-              <p class="card-text flex-grow-1">{{ event.event_description|slice:':80' }}...</p>
-              <div class="d-flex justify-content-between align-items-center mt-2">
-                <a href="{% url 'event_detail' event.pk %}" class="btn btn-sm btn-primary">View Details</a>
-                <div id="countdown-{{ event.pk }}" class="font-weight-bold text-danger"></div>
+      <!-- Events Section (9 columns) -->
+      <div class="col-md-9">
+        <h2 class="text-center my-4">Upcoming Events</h2>
+        <div class="row">
+          {% for event in events %}
+            <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+              <div class="card border-primary" style="height: 100%">
+                {% if event.event_image %}
+                  <img src="{{ event.event_image.url }}" class="card-img-top" alt="{{ event.event_title }}" style="object-fit: cover; height: 150px" />
+                {% else %}
+                  <img src="{% static 'images/default_event.svg' %}" class="card-img-top" alt="Default Image" style="object-fit: cover; height: 150px" />
+                {% endif %}
+                <div class="card-body d-flex flex-column" style="height: 100%">
+                  <h6 class="card-title">{{ event.event_title }}</h6>
+                  <p class="card-text flex-grow-1">{{ event.event_description|slice:':80' }}...</p>
+                  <div class="d-flex justify-content-between align-items-center mt-2">
+                    <a href="{% url 'event_detail' event.pk %}" class="btn btn-sm btn-primary">View Details</a>
+                    <div id="countdown-{{ event.pk }}" class="font-weight-bold text-danger"></div>
+                  </div>
+                </div>
               </div>
             </div>
-          </div>
-        </div>
-      {% empty %}
-        <div class="col-12 text-center">
-          <p class="text-muted">No upcoming events available.</p>
-        </div>
-      {% endfor %}
-    </div>
-
-    <!-- Pagination -->
-    <div class="d-flex justify-content-center mt-4">
-      <nav aria-label="Page navigation">
-        <ul class="pagination">
-          {% if events.has_previous %}
-            <li class="page-item">
-              <a class="page-link" href="?page={{ events.previous_page_number }}" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a>
-            </li>
-          {% endif %}
-
-          {% for num in events.paginator.page_range %}
-            {% if events.number == num %}
-              <li class="page-item active">
-                <span class="page-link">{{ num }}</span>
-              </li>
-            {% else %}
-              <li class="page-item">
-                <a class="page-link" href="?page={{ num }}">{{ num }}</a>
-              </li>
-            {% endif %}
+          {% empty %}
+            <div class="col-12 text-center">
+              <p class="text-muted">No upcoming events available.</p>
+            </div>
           {% endfor %}
+        </div>
 
-          {% if events.has_next %}
-            <li class="page-item">
-              <a class="page-link" href="?page={{ events.next_page_number }}" aria-label="Next"><span aria-hidden="true">&raquo;</span></a>
-            </li>
-          {% endif %}
-        </ul>
-      </nav>
+        <!-- Pagination -->
+        <div class="d-flex justify-content-center mt-4">
+          <nav aria-label="Page navigation">
+            <ul class="pagination">
+              {% if events.has_previous %}
+                <li class="page-item">
+                  <a class="page-link" href="?page={{ events.previous_page_number }}" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a>
+                </li>
+              {% endif %} {% for num in events.paginator.page_range %}
+                {% if events.number == num %}
+                  <li class="page-item active">
+                    <span class="page-link">{{ num }}</span>
+                  </li>
+                {% else %}
+                  <li class="page-item">
+                    <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+                  </li>
+                {% endif %}
+              {% endfor %} {% if events.has_next %}
+                <li class="page-item">
+                  <a class="page-link" href="?page={{ events.next_page_number }}" aria-label="Next"><span aria-hidden="true">&raquo;</span></a>
+                </li>
+              {% endif %}
+            </ul>
+          </nav>
+        </div>
+      </div>
     </div>
   </div>
 
   <script>
-    document.addEventListener('DOMContentLoaded', function() {
-      {% for event in events %}
-        (function() {
-          var endDate = new Date("{{ event.event_registration_end|date:'Y-m-d H:i:s' }}").getTime();
-          var countdownElement = document.getElementById("countdown-{{ event.pk }}");
+  document.addEventListener('DOMContentLoaded', function() {
+    {% for event in events %}
+      (function() {
+        var endDate = new Date("{{ event.event_registration_end|date:'Y-m-d H:i:s' }}").getTime();
+        var countdownElement = document.getElementById("countdown-{{ event.pk }}");
 
-          var interval = setInterval(function() {
-            var now = new Date().getTime();
-            var distance = endDate - now;
+        var interval = setInterval(function() {
+          var now = new Date().getTime();
+          var distance = endDate - now;
 
-            if (distance < 0) {
-              clearInterval(interval);
-              countdownElement.innerHTML = "Registration Closed";
-              return;
-            }
+          if (distance < 0) {
+            clearInterval(interval);
+            countdownElement.innerHTML = "Registration Closed";
+            return;
+          }
 
-            var days = Math.floor(distance / (1000 * 60 * 60 * 24));
-            var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-            var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-            var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+          var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+          var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+          var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+          var seconds = Math.floor((distance % (1000 * 60)) / 1000);
 
-            countdownElement.innerHTML = days + "d " + hours + "h " + minutes + "m " + seconds + "s ";
-          }, 1000);
-        })();
-      {% endfor %}
-    });
-  </script>
+          countdownElement.innerHTML = days + "d " + hours + "h " + minutes + "m " + seconds + "s ";
+        }, 1000);
+      })();
+    {% endfor %}
+  });
+</script>
 {% endblock %}

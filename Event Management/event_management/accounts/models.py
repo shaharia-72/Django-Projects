@@ -6,6 +6,9 @@ class CustomUser(AbstractUser):
     is_participant = models.BooleanField(default=False)
     is_organizer = models.BooleanField(default=False)
 
+    # def __str__(self):
+        # return f"{self.is_participant} {self.is_organizer}"
+
 class Participant(models.Model):
     user = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
     first_name = models.CharField(max_length=30)
