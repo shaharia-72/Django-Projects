@@ -1,0 +1,78 @@
+<!-- organizer_history.html -->
+{% extends 'base_profile.html' %} {% block content %}
+<h2>Organizer History</h2>
+{% comment %}
+<table class="table">
+  <thead>
+    <tr>
+      <th>Event Title</th>
+      <th>Participants (Interest)</th>
+      <th>Confirmed Payments</th>
+      <th>Total Earnings</th>
+      <th>VAT</th>
+      <th>Platform Charge</th>
+      <th>Final Earnings</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for detail in event_details %}
+    <tr>
+      <td>{{ detail.event.event_title }}</td>
+      <td>{{ detail.expressed_interest_count }}</td>
+      <td>{{ detail.completed_payment_count }}</td>
+      <td>${{ detail.total_earnings }}</td>
+      <td>${{ detail.vat }}</td>
+      <td>${{ detail.platform_charge }}</td>
+      <td>${{ detail.final_earnings }}</td>
+      <td>
+        <a href="#" class="btn btn-info">Download Participants</a>
+        {% if detail.completed_payment_count > 0 %}
+        <a href="#" class="btn btn-success">Download Payment Report</a>
+        {% endif %}
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endcomment %}
+
+<table class="table table-striped table-bordered">
+  <thead>
+    <tr>
+      <th scope="col" class="w-23">Event Title</th>
+      <th scope="col" class="w-12 text-center">Participants (Interest)</th>
+      <th scope="col" class="w-12 text-center">Confirmed Payments</th>
+      <th scope="col" class="w-22 text-center">Total Earnings (Taka)</th>
+      <th scope="col">Actions (Download)</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for detail in event_details %}
+    <tr>
+      {% comment %}
+      <th scope="row">1</th>
+      {% endcomment %}
+      <td class="w-23">{{ detail.event.event_title }}</td>
+      <td class="w-12 text-center">{{ detail.expressed_interest_count }}</td>
+      <td class="w-12 text-center">{{ detail.completed_payment_count }}</td>
+      <td class="w-22 text-center">
+        {{ detail.final_earnings|floatformat:2 }} Taka
+      </td>
+      <td>
+        <div class="w-30">
+          <a
+            href="{% url 'organizer_history_download' detail.event.event_id %}"
+            class="btn btn-info btn-sm me-2"
+            >Participants List</a
+          >
+          {% if detail.completed_payment_count > 0 %}
+          <a href="#" class="btn btn-success btn-sm">Payment Report</a>
+          {% endif %}
+        </div>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

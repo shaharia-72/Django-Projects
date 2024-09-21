@@ -36,7 +36,8 @@
       }
       .invoice-table th,
       .invoice-table td {
-        padding: 10px;
+        padding: 8px; /* Reduced padding for compactness */
+        text-align: center; /* Center text in table */
       }
       .invoice-summary {
         margin-top: 30px;
@@ -57,6 +58,31 @@
         font-size: 18px;
         margin-bottom: 10px;
       }
+      /* Table styles */
+      .invoice-table {
+        border: 2px solid #dee2e6; /* Border around the table */
+        border-collapse: collapse; /* Collapse borders */
+        width: 100%; /* Full width */
+      }
+      .invoice-table th,
+      .invoice-table td {
+        border: 1px solid #dee2e6; /* Border for table cells */
+      }
+      .participants-column {
+        width: 15%; /* Width for Participants column */
+      }
+      .ticket-price-column {
+        width: 20%; /* Increased width for Ticket Price */
+      }
+      .event-id-column {
+        width: 20%; /* Width for Event ID */
+      }
+      .transaction-column {
+        width: 20%; /* Increased width for Transaction ID */
+      }
+      .event-name-column {
+        width: 25%; /* More space for Event Name */
+      }
     </style>
   </head>
   <body>
@@ -67,12 +93,12 @@
       </div>
 
       <!-- Company Info -->
-      <div class="company-info">
-        <p>
+      <div class="company-info" style="line-height: 1.2;">
+        <p style="margin-bottom: 0;">
           <strong>Event Management Co.</strong>
         </p>
-        <p>123 Event St., New York, NY 10001</p>
-        <p>Email: support@eventmanagement.com</p>
+        <p style="margin-bottom: 0;">123 Event St., New York, NY 10001</p>
+        <p style="margin-bottom: 0;">Email: support@eventmanagement.com</p>
       </div>
 
       <!-- Participant and Organizer Info -->
@@ -103,25 +129,23 @@
       <!-- Event and Payment Details -->
       <div class="invoice-summary">
         <p class="detail-title">Event and Payment Details:</p>
-        <table class="table table-borderless">
+        <table class="table table-bordered invoice-table text-center">
           <thead>
             <tr>
-              <th>Event Name</th>
-              <th>Event ID</th>
-              <th>Transaction ID</th>
-              <th>Participants</th>
-              <th>Price per Ticket</th>
-              <th>Subtotal</th>
+              <th class="event-name-column">Event Name</th>
+              <th class="event-id-column">Event ID</th>
+              <th class="transaction-column">Transaction ID</th>
+              <th class="participants-column">Participants</th>
+              <th class="ticket-price-column">Ticket Price</th>
             </tr>
           </thead>
           <tbody>
             <tr>
               <td>{{ event.event_title }}</td>
-              <td>{{ event.id }}</td>
+              <td>{{ event.event_id }}</td>
               <td>{{ transition_id }}</td>
               <td>{{ number_of_participants }}</td>
               <td>${{ ticket_price }}</td>
-              <td>${{ subtotal }}</td>
             </tr>
           </tbody>
         </table>

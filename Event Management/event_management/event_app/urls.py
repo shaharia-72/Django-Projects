@@ -1,6 +1,6 @@
 from django.urls import path
 from .import views
-from .views import ParticipantEventView, ParticipantEventDetailsView, ParticipantInterestView,OrganizerEventParticipantsView, PDFView,ParticipantHistoryView, ParticipantEventInterestView, ParticipantPaymentConfirmView, PaymentInvoiceDownloadView, PaymentConfirmView,   OrganizerEventView, OrganizerEventCreateView, OrganizerEventUpdateView
+from .views import ParticipantEventView, ParticipantEventDetailsView, ParticipantInterestView,OrganizerEventParticipantsView,ParticipantHistoryView, ParticipantEventInterestView, ParticipantPaymentConfirmView, PaymentInvoiceDownloadView, PaymentConfirmView,   OrganizerEventView, OrganizerEventCreateView, OrganizerEventUpdateView, OrganizationHistoryView,OrganizationDownloadView
 
 urlpatterns = [
     # path('', ParticipantEventView.as_view(), name='participant_event'),
@@ -9,8 +9,8 @@ urlpatterns = [
     # path('organizer/events/', OrganizerEventView.as_view(), name='organizer_event'),
     path('organizer/events/create/', OrganizerEventCreateView.as_view(), name='organizer_event_create'),
     path('organizer/events/<int:pk>/participants/', OrganizerEventParticipantsView.as_view(), name='organizer_event_participants'),
-    path('events/<int:event_id>/pdf/', PDFView.as_view(), name='event_pdf'),
-    path('history/', ParticipantHistoryView.as_view(), name='participant_history'),
+    # path('events/<int:event_id>/pdf/', PDFView.as_view(), name='event_pdf'),
+    path('history/participant/', ParticipantHistoryView.as_view(), name='participant_history'),
     path('participant_event_interest/', ParticipantEventInterestView.as_view(), name='participant_event_interest'),
     path('download_invoice/<int:pk>/', PaymentInvoiceDownloadView.as_view(), name='download_invoice'),
     path('download_invoice/<int:pk>/', PaymentInvoiceDownloadView.as_view(), name='download_invoice'),
@@ -20,6 +20,9 @@ urlpatterns = [
     path('organizer/event-update/<int:event_id>/', OrganizerEventUpdateView.as_view(), name='event-update'),
     # path('category/<slug:slug>/', CategoryEventView.as_view(), name='category_events'),
     path('category/<int:category_id>/', views.category, name='category'),
+    path('history/organizer/', OrganizationHistoryView.as_view(), name='organizer_history'),
+    path('download/<slug:event_id>/', OrganizationDownloadView.as_view(), name='organizer_history_download'),
+    
 ]
 
 

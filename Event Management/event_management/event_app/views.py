@@ -1,4 +1,3 @@
-from datetime import datetime, timezone
 from typing import Any
 from django.shortcuts import render
 from django.urls import reverse_lazy
@@ -16,12 +15,14 @@ from io import BytesIO
 from xhtml2pdf import pisa
 from django.core.paginator import Paginator
 from django.views.generic.edit import FormView, UpdateView
+from django.db.models import Sum
+from django.utils import timezone
 
 class ParticipantEventView(View):
     template_name = 'participant_event.html'
 
     # def get(self, request, *args, **kwargs):
-    #     now = datetime.now()  
+        # now = timezone.now()  
     #     events = Event.objects.filter(
     #         event_registration_end__gte=now, 
     #         event_registration_start__lte=now
@@ -50,7 +51,7 @@ class ParticipantEventView(View):
     def get(self, request, *args, **kwargs):
         # context = super().get_context_data(**kwargs)
 
-        now = datetime.now()  
+        now = timezone.now()  
         events = Event.objects.filter(
             event_registration_end__gte=now, 
             event_registration_start__lte=now
@@ -105,7 +106,7 @@ class ParticipantEventView(View):
 #         return context
     
 def category(request, category_id):
-    now = datetime.now()
+    now = timezone.now()
     category = Category.objects.filter(pk=category_id).first()
     
     if category is None:
@@ -124,9 +125,9 @@ def category(request, category_id):
     categories = Category.objects.all()
     
     return render(request, 'participant_event.html', {
-        'events': page_obj,
-        'events': events,
-        'categories': categories
+       'events': page_obj,
+        'categories': categories,
+        'active_category': category_id
     })
 
     
@@ -148,8 +149,10 @@ class ParticipantInterestView(FormView):
         event = get_object_or_404(Event, pk=self.kwargs['event_id'])
         number_of_participants = form.cleaned_data['number_of_participants']
         
-        Participation.objects.create(participant=self.request.user.participant, event=event, number_of_participants=number_of_participants, status='pending')
+        #Participation.objects.create(participant=self.request.user.participant, event=event, number_of_participants=number_of_participants, status='pending')
+        participation = Participation.objects.create(participant=self.request.user.participant, event=event, number_of_participants=number_of_participants, status='pending')
         
+        participation.save()
         # return redirect('participant_event')
         return redirect(self.success_url)
 
@@ -500,23 +503,26 @@ class OrganizerEventView(LoginRequiredMixin, ListView):
     template_name = 'organizer_event.html'
 
     def get(self, request, *args, **kwargs):
-        now = datetime.now()  
+        now = timezone.now()  
         events = Event.objects.filter(
             event_registration_end__gte=now, 
             event_registration_start__lte=now,
             organizer=self.request.user.organizer
         ).order_by('event_start_date')  
+        categories = Category.objects.all()
         
-        context = {
-            'events': events
-        }
+      
+
+    
 
         paginator = Paginator(events, 8)
         page_number = request.GET.get('page')
         page_numbers = paginator.get_page(page_number)
 
         context = {
-            'events': page_numbers
+            'events': page_numbers,
+            'events': events,
+            'categories': categories,
         }
         return render(request, self.template_name, context)
     
@@ -578,7 +584,7 @@ class OrganizerEventParticipantsView(LoginRequiredMixin, DetailView):
 
     def get(self, request, *args, **kwargs):
         event = self.get_object()
-        now = datetime.now()
+        now = timezone.now()
         if event.event_registration_end >= now:
             return HttpResponse("Registration still ongoing or event has not ended.", status=400)
 
@@ -596,23 +602,112 @@ class OrganizerEventParticipantsView(LoginRequiredMixin, DetailView):
         response['Content-Disposition'] = f'attachment; filename="participants_list_{event.event_id}.pdf"'
         return response
 
-class PDFView(View):
+# class PDFView(View):
+#     def get(self, request, *args, **kwargs):
+#         event = get_object_or_404(Event, pk=kwargs['event_id'])
+#         participation = Participation.objects.filter(event=event, status='confirmed')
+
+#         context = {
+#             'event': event,
+#             'participation': participation,
+#         }
+
+#         html_string = render_to_string('pdf_template.html', context)
+#         response = HttpResponse(content_type='application/pdf')
+#         response['Content-Disposition'] = 'attachment; filename="invoice.pdf"'
+        
+#         pisa_status = pisa.CreatePDF(html_string.encode('UTF-8'), dest=response)
+#         return response
+    
+class OrganizationHistoryView(LoginRequiredMixin, ListView):
+    model = Event
+    template_name = 'organization_history.html'
+    context_object_name = 'organization_history'
+
+    # def get_queryset(self):
+    #     organizer = self.request.user.organizer
+    #     now = datetime.now()
+        
+    #     events = Event.objects.filter(organizer=organizer, event_registration_end__lt=now).order_by('-event_start_date')
+
+    #     return events
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        # now = datetime.now()
+        now = timezone.now()
+        organizer = self.request.user.organizer
+        
+        events = Event.objects.filter(organizer=organizer, event_registration_end__lt=now)
+        # print(f"Number of events: {events.count()}")
+        context['events'] = events 
+        
+        event_details = []
+        for event in events:
+            
+            # print(event.id, Participation.objects.filter(event=event).count())
+
+            # event = Event.objects.get(id=1)
+
+            participations = Participation.objects.filter(event=event)
+            # print(f"Number of participations for event ID {event.event_id}: {participations.count()}")
+
+            expressed_interest_count = participations.count()
+            completed_payment_count = participations.filter(is_payment_confirmed=True).count()
+
+            participant_count_sum = participations.filter(is_payment_confirmed=True).aggregate(total_participants=Sum('number_of_participants'))['total_participants'] or 0
+            ticket_price_sum = participations.filter(is_payment_confirmed=True).aggregate(total_ticket_price=Sum('event__event_ticket_price'))['total_ticket_price'] or 0
+            # print(f"Participant count sum: {participant_count_sum}, Ticket price sum: {ticket_price_sum}")
+
+            # Calculate total earnings
+            # total_earnings = participant_count_sum * ticket_price_sum
+            total_earnings = float(ticket_price_sum)
+
+            vat = float(total_earnings) * 0.15
+            platform_charge = float(total_earnings) * 0.05
+            final_earnings = ((total_earnings) - (vat + platform_charge))
+            
+            event_details.append({
+                'event': event,
+                'expressed_interest_count': expressed_interest_count,
+                'completed_payment_count': completed_payment_count,
+                'total_earnings': total_earnings,
+                'vat': vat,
+                'platform_charge': platform_charge,
+                'final_earnings': final_earnings
+            })
+            print(f"Event details: {event_details}")
+        
+        context['event_details'] = event_details
+        context['active_page'] = 'history'
+        return context
+
+
+
+class OrganizationDownloadView(LoginRequiredMixin, View):
+    
     def get(self, request, *args, **kwargs):
-        event = get_object_or_404(Event, pk=kwargs['event_id'])
-        participation = Participation.objects.filter(event=event, status='confirmed')
+
+        event = get_object_or_404(Event, event_id=kwargs['event_id'], organizer=self.request.user.organizer)
+
+        participations = Participation.objects.filter(event=event, is_payment_confirmed=True)
 
         context = {
-            'event': event,
-            'participation': participation,
+            'event': event,  
+            'participations': participations,
+            'organizer': event.organizer,
         }
 
-        html_string = render_to_string('pdf_template.html', context)
-        response = HttpResponse(content_type='application/pdf')
-        response['Content-Disposition'] = 'attachment; filename="invoice.pdf"'
-        
-        pisa_status = pisa.CreatePDF(html_string.encode('UTF-8'), dest=response)
-        return response
-    
+        html_string = render_to_string('participants_list_pdf.html', context)
 
+        pdf_file = BytesIO()
+        pdf_status = pisa.CreatePDF(html_string.encode('UTF-8'), dest=pdf_file)
 
+        if not pdf_status.err:
+            response = HttpResponse(pdf_file.getvalue(), content_type='application/pdf')
+            response['Content-Disposition'] = f'attachment; filename="participants_{event.event_id}.pdf"'
+            return response
+        else:
+
+            return HttpResponse('Error generating PDF', status=500)
 
