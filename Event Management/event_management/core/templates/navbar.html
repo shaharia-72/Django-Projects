@@ -13,7 +13,7 @@
 
         <!-- Additional link for authenticated users -->
         {% if user.is_organizer %}
-          <a href="#" class="ml-6 text-lg text-white font-bold text-decoration-none">Organizer Dashboard</a>
+          <a href="{% url 'organizer_request_accept' %}" class="ml-6 text-lg text-white font-bold text-decoration-none">Organizer Dashboard</a>
         {% elif user.is_participant %}
           <a href="{% url 'participant_event_interest' %}" class="ml-6 text-lg text-white font-bold text-decoration-none">Participant Dashboard</a>
         {% endif %}

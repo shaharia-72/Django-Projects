@@ -7,8 +7,8 @@ from django.shortcuts import get_object_or_404, redirect
 from accounts import forms
 from accounts.models import Organizer
 from .models import Event, Participation, Participant, Category
-from .forms import InterestForm, EventForm
-from django.http import HttpResponse, HttpResponseBadRequest, JsonResponse
+from .forms import InterestForm, EventForm, ParticipationActionForm
+from django.http import HttpResponse, HttpResponseBadRequest, HttpResponseRedirect, JsonResponse
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.template.loader import render_to_string
 from io import BytesIO
@@ -17,6 +17,7 @@ from django.core.paginator import Paginator
 from django.views.generic.edit import FormView, UpdateView
 from django.db.models import Sum
 from django.utils import timezone
+from django.contrib import messages 
 
 class ParticipantEventView(View):
     template_name = 'participant_event.html'
@@ -125,7 +126,7 @@ def category(request, category_id):
     categories = Category.objects.all()
     
     return render(request, 'participant_event.html', {
-       'events': page_obj,
+        'events': page_obj,
         'categories': categories,
         'active_category': category_id
     })
@@ -505,16 +506,11 @@ class OrganizerEventView(LoginRequiredMixin, ListView):
     def get(self, request, *args, **kwargs):
         now = timezone.now()  
         events = Event.objects.filter(
-            event_registration_end__gte=now, 
-            event_registration_start__lte=now,
+
             organizer=self.request.user.organizer
         ).order_by('event_start_date')  
         categories = Category.objects.all()
         
-      
-
-    
-
         paginator = Paginator(events, 8)
         page_number = request.GET.get('page')
         page_numbers = paginator.get_page(page_number)
@@ -638,7 +634,7 @@ class OrganizationHistoryView(LoginRequiredMixin, ListView):
         now = timezone.now()
         organizer = self.request.user.organizer
         
-        events = Event.objects.filter(organizer=organizer, event_registration_end__lt=now)
+        events = Event.objects.filter(organizer=organizer)
         # print(f"Number of events: {events.count()}")
         context['events'] = events 
         
@@ -674,7 +670,8 @@ class OrganizationHistoryView(LoginRequiredMixin, ListView):
                 'total_earnings': total_earnings,
                 'vat': vat,
                 'platform_charge': platform_charge,
-                'final_earnings': final_earnings
+                'final_earnings': final_earnings,
+                'now': now,
             })
             print(f"Event details: {event_details}")
         
@@ -692,22 +689,156 @@ class OrganizationDownloadView(LoginRequiredMixin, View):
 
         participations = Participation.objects.filter(event=event, is_payment_confirmed=True)
 
-        context = {
-            'event': event,  
-            'participations': participations,
-            'organizer': event.organizer,
-        }
+        # context = {
+        #     'event': event,  
+        #     'participations': participations,
+        #     'organizer': event.organizer,
+        # }
 
-        html_string = render_to_string('participants_list_pdf.html', context)
+        # html_string = render_to_string('participants_list_pdf.html', context)
+
+        pdf_type = kwargs.get('participant_list', 'Income_status')
+
+        if pdf_type == 'participant_list':
+            context = {
+                'event': event,  
+                'participations': participations,
+                'organizer': event.organizer,
+            }
+
+            html_string = render_to_string('participants_list_pdf.html',context)
+            filename = f'participants_list_of_{event.event_id}.pdf'
+
+        elif pdf_type == 'Income_status':
+
+            expressed_interest_count = participations.count()
+            completed_payment_count = participations.filter(is_payment_confirmed=True).count()
+            participant_count_sum = participations.aggregate(total_participants=Sum('number_of_participants'))['total_participants'] or 0
+            ticket_price_sum = participations.aggregate(total_ticket_price=Sum('event__event_ticket_price'))['total_ticket_price'] or 0
+        
+            total_earnings = float(ticket_price_sum)
+            vat = total_earnings * 0.15
+            platform_charge = total_earnings * 0.05
+            final_earnings = total_earnings - (vat + platform_charge)
+
+            context = {
+                'event': event,  
+                'participations': participations,
+                'organizer': event.organizer,
+                'expressed_interest_count': expressed_interest_count,
+                'completed_payment_count': completed_payment_count,
+                'total_earnings': total_earnings,
+                'vat': vat,
+                'platform_charge': platform_charge,
+                'final_earnings': final_earnings,
+            }
+
+            html_string = render_to_string('Income_status_pdf.html',context)
+            filename = f'Income_status__of_{event.event_id}.pdf'
 
         pdf_file = BytesIO()
         pdf_status = pisa.CreatePDF(html_string.encode('UTF-8'), dest=pdf_file)
 
         if not pdf_status.err:
             response = HttpResponse(pdf_file.getvalue(), content_type='application/pdf')
-            response['Content-Disposition'] = f'attachment; filename="participants_{event.event_id}.pdf"'
+            response['Content-Disposition'] = f'attachment; filename="{filename}"'
             return response
         else:
 
             return HttpResponse('Error generating PDF', status=500)
+        
 
+# class OrganizerRequestAcceptView(LoginRequiredMixin, View):
+#     template_name = 'organizer_requests_accept.html'
+
+#     def get(self, request, *args, **kwargs):
+#         selected_event_id = request.GET.get('event_id')
+#         events = Event.objects.filter(organizer=request.user.organizer).prefetch_related('participation_set')
+#         selected_event = Event.objects.filter(event_id=selected_event_id).first() if selected_event_id else None
+#         return render(request, self.template_name, {
+#             'events': events,
+#             'selected_event_id': selected_event_id,
+#             'selected_event': selected_event
+#         })
+
+#     def post(self, request, *args, **kwargs):
+#         action = request.POST.get('action')
+#         participation_id = request.POST.get('participation_id')
+
+#         try:
+#             participation = Participation.objects.get(id=participation_id)
+#         except Participation.DoesNotExist:
+#             messages.error(request, "Participation not found.")
+#             return HttpResponseRedirect(f'?event_id={request.POST.get("event_id")}')
+
+#         if action == 'accept' and participation.status == 'pending':
+#             participation.status = 'confirmed'
+#             participation.is_payment_confirmed = True
+#             messages.success(request, "Participation successfully confirmed.")
+#         elif action == 'delete':
+#             participation.delete()
+#             messages.success(request, "Participation successfully deleted.")
+
+#         participation.save()
+        
+#         # Redirect with event_id in query parameter
+#         event_id = request.POST.get('event_id')
+#         return HttpResponseRedirect(f'?event_id={event_id}')
+
+class OrganizerRequestAcceptView(LoginRequiredMixin, ListView, FormView):
+    template_name = 'organizer_requests_accept.html'
+    form_class = ParticipationActionForm
+    context_object_name = 'events'
+    success_url = reverse_lazy('organizer_event_requests')
+
+    def get_queryset(self):
+        # Only show events with ongoing registration (registration end date is in the future)
+        return Event.objects.filter(
+            organizer=self.request.user.organizer, 
+            event_registration_end__gte=timezone.now()
+        ).prefetch_related('participation_set')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        selected_event_id = self.request.GET.get('event_id')
+        selected_event = None
+
+        if selected_event_id:
+            selected_event = get_object_or_404(Event, event_id=selected_event_id)
+
+        # Create a list of forms for each 'pending' participation entry
+        forms = []
+        if selected_event:
+            # Only show participations with 'pending' status
+            for participation in selected_event.participation_set.filter(status='pending'):
+                form = self.get_form(self.form_class)  # Create a form instance
+                form.fields['participation_id'].initial = participation.id
+                form.fields['event_id'].initial = selected_event_id
+                forms.append((participation, form))  # Append tuple of participation and form
+
+        context['forms'] = forms
+        context['selected_event_id'] = selected_event_id
+        context['selected_event'] = selected_event
+        return context
+
+    def form_valid(self, form):
+        action = form.cleaned_data['action']
+        participation_id = form.cleaned_data['participation_id']
+
+        try:
+            participation = Participation.objects.get(id=participation_id)
+        except Participation.DoesNotExist:
+            messages.error(self.request, "Participation not found.")
+            return self.form_invalid(form)
+
+        if action == 'accept' and participation.status == 'pending':
+            participation.status = 'confirmed'
+            participation.is_payment_confirmed = False
+            messages.success(self.request, "Participation successfully confirmed.")
+            participation.save()
+        elif action == 'delete':
+            participation.delete()
+            messages.success(self.request, "Participation successfully deleted.")
+
+        event_id = self.request.POST.get('event_id')
+        return HttpResponseRedirect(f'?event_id={event_id}')

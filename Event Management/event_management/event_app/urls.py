@@ -1,6 +1,6 @@
 from django.urls import path
 from .import views
-from .views import ParticipantEventView, ParticipantEventDetailsView, ParticipantInterestView,OrganizerEventParticipantsView,ParticipantHistoryView, ParticipantEventInterestView, ParticipantPaymentConfirmView, PaymentInvoiceDownloadView, PaymentConfirmView,   OrganizerEventView, OrganizerEventCreateView, OrganizerEventUpdateView, OrganizationHistoryView,OrganizationDownloadView
+from .views import ParticipantEventView, ParticipantEventDetailsView, ParticipantInterestView,OrganizerEventParticipantsView,ParticipantHistoryView, ParticipantEventInterestView, ParticipantPaymentConfirmView, PaymentInvoiceDownloadView, PaymentConfirmView,   OrganizerEventView, OrganizerEventCreateView, OrganizerEventUpdateView, OrganizationHistoryView,OrganizationDownloadView, OrganizerRequestAcceptView
 
 urlpatterns = [
     # path('', ParticipantEventView.as_view(), name='participant_event'),
@@ -21,7 +21,12 @@ urlpatterns = [
     # path('category/<slug:slug>/', CategoryEventView.as_view(), name='category_events'),
     path('category/<int:category_id>/', views.category, name='category'),
     path('history/organizer/', OrganizationHistoryView.as_view(), name='organizer_history'),
-    path('download/<slug:event_id>/', OrganizationDownloadView.as_view(), name='organizer_history_download'),
+    # path('download/<slug:event_id>/', OrganizationDownloadView.as_view(), name='organizer_history_download'),
+    path('organizer/event/<slug:event_id>/pdf/<str:pdf_type>/', OrganizationDownloadView.as_view(), name='organizer_pdf'),
+    # path('organizer/request-accept/', OrganizerRequestAcceptView.as_view(), name='organizer_request_accept'),
+    # path('organizer/request-accept/', OrganizerRequestAcceptView.as_view(), name='organizer_request_accept'),  # without event_id
+    # path('organizer/request-accept/<slug:event_id>/', OrganizerRequestAcceptView.as_view(), name='organizer_request_accept_with_event_id'),
+    path('organizer/event-requests/', OrganizerRequestAcceptView.as_view(), name='organizer_request_accept'),
     
 ]
 
