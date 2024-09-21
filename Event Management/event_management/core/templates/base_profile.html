@@ -4,11 +4,19 @@
   <aside class="w-1/4 bg-white shadow-md rounded-lg p-4">
     <ul class="space-y-4">
       <li>
+        {% if user.is_organizer %}
+        <a
+          href="{% url 'organizer_request_accept' %}"
+          class="block text-center font-bold py-2 px-4 rounded-lg transition duration-300 {% if active_page == 'Dashboard' %} bg-blue-700 text-black hover:bg-blue-800 text-decoration-none {% else %} bg-gray-300 text-black font-bold text-decoration-none {% endif %}">
+          Dashboard
+        </a>
+        {% elif user.is_participant %}
         <a
           href="{% url 'participant_event_interest' %}"
           class="block text-center font-bold py-2 px-4 rounded-lg transition duration-300 {% if active_page == 'my_interest' %} bg-blue-700 text-black hover:bg-blue-800 text-decoration-none {% else %} bg-gray-300 text-black font-bold text-decoration-none {% endif %}">
           My interest
         </a>
+        {% endif %}
       </li>
       <li>
         {% if user.is_organizer %}

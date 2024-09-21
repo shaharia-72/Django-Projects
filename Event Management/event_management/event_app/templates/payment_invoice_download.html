@@ -145,7 +145,7 @@
               <td>{{ event.event_id }}</td>
               <td>{{ transition_id }}</td>
               <td>{{ number_of_participants }}</td>
-              <td>${{ ticket_price }}</td>
+              <td>{{ ticket_price }}</td>
             </tr>
           </tbody>
         </table>
@@ -153,15 +153,15 @@
         <!-- Payment Summary -->
         <div class="text-end mt-4">
           <p>
-            <strong>Subtotal:</strong> ${{ subtotal }}
+            <strong>Subtotal:</strong> {{ subtotal }} Taka
           </p>
           <p>
-            <strong>VAT (15%):</strong> ${{ vat }}
+            <strong>VAT (15%):</strong> {{ vat }} Taka
           </p>
           <p>
-            <strong>Platform Charge (5%):</strong> ${{ platform_charge }}
+            <strong>Platform Charge (5%):</strong> {{ platform_charge }} Taka
           </p>
-          <p class="total-amount">Total Amount: ${{ total_amount }}</p>
+          <p class="total-amount">Total Amount: {{ total_amount }} Taka</p>
         </div>
       </div>
 

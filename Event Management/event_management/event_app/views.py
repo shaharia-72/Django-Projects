@@ -562,17 +562,6 @@ class OrganizerEventUpdateView(UpdateView):
 
         return reverse_lazy('or-home')
     
-    
-    
-
-
-
-
-
-
-
-
-
 
 class OrganizerEventParticipantsView(LoginRequiredMixin, DetailView):
     model = Event
@@ -697,7 +686,7 @@ class OrganizationDownloadView(LoginRequiredMixin, View):
 
         # html_string = render_to_string('participants_list_pdf.html', context)
 
-        pdf_type = kwargs.get('participant_list', 'Income_status')
+        pdf_type = kwargs.get('pdf_type','participant_list')
 
         if pdf_type == 'participant_list':
             context = {
@@ -707,7 +696,7 @@ class OrganizationDownloadView(LoginRequiredMixin, View):
             }
 
             html_string = render_to_string('participants_list_pdf.html',context)
-            filename = f'participants_list_of_{event.event_id}.pdf'
+            filename = f'all_participants_list_of_{event.event_id}.pdf'
 
         elif pdf_type == 'Income_status':
 
@@ -716,7 +705,7 @@ class OrganizationDownloadView(LoginRequiredMixin, View):
             participant_count_sum = participations.aggregate(total_participants=Sum('number_of_participants'))['total_participants'] or 0
             ticket_price_sum = participations.aggregate(total_ticket_price=Sum('event__event_ticket_price'))['total_ticket_price'] or 0
         
-            total_earnings = float(ticket_price_sum)
+            total_earnings = float(ticket_price_sum * participant_count_sum)
             vat = total_earnings * 0.15
             platform_charge = total_earnings * 0.05
             final_earnings = total_earnings - (vat + platform_charge)
@@ -731,10 +720,11 @@ class OrganizationDownloadView(LoginRequiredMixin, View):
                 'vat': vat,
                 'platform_charge': platform_charge,
                 'final_earnings': final_earnings,
+                'participant_count_sum': participant_count_sum,
             }
 
             html_string = render_to_string('Income_status_pdf.html',context)
-            filename = f'Income_status__of_{event.event_id}.pdf'
+            filename = f'total_Income_status_of_{event.event_id}.pdf'
 
         pdf_file = BytesIO()
         pdf_status = pisa.CreatePDF(html_string.encode('UTF-8'), dest=pdf_file)
@@ -819,6 +809,7 @@ class OrganizerRequestAcceptView(LoginRequiredMixin, ListView, FormView):
         context['forms'] = forms
         context['selected_event_id'] = selected_event_id
         context['selected_event'] = selected_event
+        context['active_page'] = 'Dashboard'
         return context
 
     def form_valid(self, form):
